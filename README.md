@@ -32,17 +32,25 @@ This is a starter / boilerplate project for integrating **Amazon Bedrock** (via 
 ## 🏗️ Project Structure
 
 ```
-.
+bedrockhandson/
+├── pom.xml
+├── README.md
 ├── src
 │   └── main
 │       ├── java
-│       │   └── com.example
-│       │       ├── BedrockDemoApplication.java  <-- main class
-│       │       └── AiController.java            <-- REST controller
+│       │   └── com.amiranga.aitraining.bedrockhandson
+│       │       ├── BedrockDemoApplication.java           <-- Main Spring Boot class
+│       │       ├── AiController.java                     <-- REST controller
+│       │       ├── model
+│       │       │   └── DocumentChunk.java               <-- Entity for text chunks
+│       │       └── service
+│       │           ├── LocalEmbedderService.java        <-- Embeddings & indexing
+│       │           ├── VectorSearchService.java         <-- Vector search / top-k retrieval
+│       │           └── RagService.java                  <-- RAG orchestration
 │       └── resources
-│           └── application.properties            <-- configuration file
-├── pom.xml
-└── README.md
+│           ├── application.properties                   <-- Spring + Bedrock config
+│           └── data/                                     <-- Optional folder for sample text files
+└── target/        
 ```
 
 ---
@@ -96,10 +104,25 @@ Start the app:
 ./mvnw spring-boot:run
 ```
 
+Add Knowledge:
+
+```bash
+curl --location 'http://localhost:8080/api/ai/indexText' \
+--header 'Content-Type: application/json' \
+--data '{
+    "text": "Ann likes to eat icecream"
+}'
+```
+
+
 Then call:
 
 ```bash
-curl -X POST http://localhost:8080/api/ai/ask      -H "Content-Type: application/json"      -d '{"prompt":"Tell me a joke in one sentence."}'
+curl --location 'http://localhost:8080/api/ai/ask' \
+--header 'Content-Type: application/json' \
+--data '{
+    "prompt": "what do Ann like?"
+}'
 ```
 
 You should receive a JSON/text response from the configured Bedrock model.
